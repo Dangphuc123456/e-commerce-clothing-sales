@@ -1,0 +1,177 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+/* =========================
+   Custom phone input
+   ========================= */
+.custom-phone-input.no-border-inner .PhoneInputInput,
+.custom-phone-input.no-border-inner .PhoneInput {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* =========================
+   Dashboard overrides
+   ========================= */
+
+/* Container chung */
+.dashboard-fluid {
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-inner {
+  max-width: 1600px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+
+/* Full bleed mode */
+.dashboard-fluid.full-bleed .dashboard-inner,
+.dashboard-inner.full-bleed {
+  max-width: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding-left: 4px !important;
+  padding-right: 4px !important;
+}
+
+/* Row gutter nhỏ */
+.row.gx-2 { --bs-gutter-x: 0.5rem !important; }
+.row.gx-1 { --bs-gutter-x: 0.25rem !important; }
+
+/* Card chung */
+.quick-card .card,
+.chart-card .card {
+  border-radius: 10px !important;
+  box-shadow: 0 6px 18px rgba(16,24,40,0.06) !important;
+  overflow: hidden;
+}
+
+/* Card body */
+.quick-card .card-body,
+.chart-card .card-body {
+  padding: 10px 12px !important;
+  overflow-x: auto; /* cho phép scroll ngang nếu nội dung rộng */
+}
+
+/* Card title và metric */
+.card .card-title { font-size: 0.9rem !important; margin-bottom: 6px !important; }
+.card .metric { font-size: 1.15rem !important; font-weight: 600 !important; }
+
+/* Pie/Chart area */
+.pie-wrap { display:flex; align-items:center; justify-content:center; height:100%; }
+.chart-area { width:100%; height:100%; }
+
+/* Responsive nhỏ */
+@media (max-width: 767.98px) {
+  .dashboard-fluid { padding-left: 6px !important; padding-right: 6px !important; }
+  .quick-card .card-body { padding: 8px !important; }
+
+  /* Table responsive mobile */
+  table {
+    font-size: 0.85rem;
+  }
+}
+
+/* Table chung */
+table {
+  width: 100%;
+  min-width: 0; /* tránh tràn container */
+  border-collapse: collapse;
+}
+
+/* Nếu dùng Bootstrap, wrap table trong .table-responsive */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Card màu */
+.card.bg-warning.text-dark { color: #1e1e1e !important; }
+.card .card-body.text-center.text-white { padding-top: 12px !important; padding-bottom: 12px !important; }
+/* Buộc toàn bộ chữ luôn nhỏ, không bị override */
+html, body, .dashboard-fluid, .dashboard-inner {
+  font-size: 13px !important; 
+}
+
+/* Các thẻ heading giảm lại */
+h1 { font-size: 13px !important; }
+h2 { font-size: 13px !important; }
+h3 { font-size: 13px !important; }
+
+/* Buttons */
+button { font-size: 0.875rem !important; }
+
+/* Card title & metric */
+.card .card-title { font-size: 0.8rem !important; }
+.card .metric { font-size: 1rem !important; }
+

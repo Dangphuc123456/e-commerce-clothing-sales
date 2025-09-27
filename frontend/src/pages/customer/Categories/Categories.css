@@ -1,0 +1,29 @@
+.product-card {
+  position: relative; /* đảm bảo overlay được đặt đúng */
+  overflow: hidden;   /* che các phần vượt ra ngoài */
+}
+
+.product-card .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background: rgba(0, 0, 0, 0.4); /* nền mờ */
+  opacity: 0;                     /* ẩn mặc định */
+  transition: opacity 0.3s ease;
+}
+
+.product-card:hover .overlay {
+  opacity: 1; /* hiện khi hover */
+}
+
+.product-card .icon-btn {
+  color: #fff;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+}

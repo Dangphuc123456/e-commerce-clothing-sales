@@ -1,0 +1,35 @@
+/* panel trượt (chỉ dùng trên màn nhỏ) */
+.nav-slide {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 95px; /* giữ cùng chiều cao navbar */
+  width: 320px; /* chỉnh được nếu muốn */
+  transform: translateX(100%); /* ban đầu ẩn ngoài phải */
+  transition: transform 250ms ease;
+  background-color: navy; /* cùng màu navbar */
+  z-index: 1500;
+  display: flex;
+  align-items: center;
+  border-left: 1px solid rgba(255,255,255,0.06);
+}
+
+/* khi mở */
+.nav-slide.open {
+  transform: translateX(0);
+}
+
+/* cho nội dung bên trong (nếu cần) */
+.nav-slide .form-control {
+  background: white;
+}
+
+/* tùy chọn: ẩn thanh scroll bar trong panel nếu có */
+.nav-slide .list-group {
+  max-width: 100%;
+}
+
+/* Make sure the toggle button doesn't show on large screens (we used d-lg-none but just in case) */
+@media (min-width: 992px) {
+  .nav-slide { display: none !important; }
+}

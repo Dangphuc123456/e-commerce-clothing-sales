@@ -1,0 +1,29 @@
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh; /* chiếm toàn bộ chiều cao màn hình */
+  border: 1px solid #ddd;
+}
+
+.message-list {
+  flex: 1; /* chiếm hết khoảng trống còn lại */
+  padding: 10px;
+  margin: 0;
+}
+
+.message-input-container {
+  display: flex;
+  border-top: 1px solid #ddd;
+  padding: 5px; /* padding nhỏ cho input */
+}
+
+.message-input-container input {
+  flex: 1;
+  padding: 8px;
+  margin: 0;
+}
+
+.message-input-container button {
+  margin-left: 5px;
+}
+
