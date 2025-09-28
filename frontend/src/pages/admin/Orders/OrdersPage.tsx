@@ -1,4 +1,3 @@
-// src/pages/admin/OrderManagementPage.tsx
 import React, { useEffect, useState } from "react";
 import { Table, Button, Modal, Spinner, Form } from "react-bootstrap";
 import api from "../../../api/axios";
@@ -51,7 +50,7 @@ const OrderManagementPage: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // pagination
+ 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
 

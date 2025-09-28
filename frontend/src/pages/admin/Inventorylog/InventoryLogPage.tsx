@@ -1,4 +1,3 @@
-// src/pages/admin/InventoryLogPage.tsx
 import React, { useEffect, useState } from "react";
 import { Table, Button, Modal, Form, Spinner } from "react-bootstrap";
 import api from "../../../api/axios";
@@ -28,7 +27,6 @@ const InventoryLogPage: React.FC = () => {
   const [changeType, setChangeType] = useState<string>("import");
   const [quantity, setQuantity] = useState<number>(0);
 
-  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
 
@@ -108,7 +106,7 @@ const InventoryLogPage: React.FC = () => {
     }
   };
 
-  // Pagination logic
+
   const totalPages = Math.ceil(logs.length / itemsPerPage);
   const paginatedLogs = logs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 

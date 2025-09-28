@@ -44,7 +44,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ role, customerId }) => {
       wsRef.current = ws;
 
       ws.onopen = () => {
-        // Đã connect thành công (không log ra console nữa)
+       
       };
 
       ws.onmessage = (event) => {
@@ -80,7 +80,7 @@ const ChatPage: React.FC<ChatPageProps> = ({ role, customerId }) => {
             return unique;
           });
         } catch {
-          // Bỏ log parse error
+          
         }
       };
 

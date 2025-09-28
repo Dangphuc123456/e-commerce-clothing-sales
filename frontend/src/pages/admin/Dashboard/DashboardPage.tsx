@@ -16,7 +16,6 @@ import {
 } from "chart.js";
 import { Spinner } from "react-bootstrap";
 
-// register chart components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -34,7 +33,7 @@ interface OrderItem { id: number; order_id: number; product_name: string; varian
 interface Order { id: number; total: number; status: string; created_at: string; Items?: OrderItem[]; }
 interface Purchase { id: number; variant_id: number; quantity: number; total: number; created_at: string; }
 
-const injectedStyles = `...`; // giữ nguyên CSS của bạn
+const injectedStyles = `...`; 
 
 const fmtCurrency = (v: number) =>
   v >= 0 ? `${v.toLocaleString("vi-VN")}₫` : `${Math.abs(v).toLocaleString("vi-VN")}₫`;

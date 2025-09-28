@@ -19,7 +19,7 @@ interface CustomerInfo {
   address: string;
 }
 
-// decode JWT
+
 function decodeJWT(token: string): any {
   try {
     const payload = token.split(".")[1];
@@ -60,7 +60,7 @@ const CheckoutPage: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<"cod" | "vnpay">("cod");
   const [loading, setLoading] = useState(false);
 
-  // Lấy dữ liệu từ JWT & xử lý VNPay return
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -73,20 +73,19 @@ const CheckoutPage: React.FC = () => {
           address: decoded.address || "",
         });
       }
-      // đảm bảo axios có Authorization header (nếu bạn chưa set ở nơi khác)
+     
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
 
-    // Xử lý VNPay return redirect -> backend redirect về /thankyou?status=confirmed|cancelled&amount=...
+   
     const params = new URLSearchParams(window.location.search);
-    const status = params.get("status"); // BE trả confirmed | cancelled
+    const status = params.get("status"); 
     if (status === "confirmed") {
-      // backend đã clear cart ở server; trên client chúng ta clear local để UI khớp
+     
       dispatch(clearCart());
       localStorage.removeItem("cartItems");
       toast.success("Thanh toán VNPay thành công!");
-      // điều hướng tới trang thankyou (nếu chưa ở đó)
-      // dùng replace để không giữ trạng thái query
+     
       navigate("/thankyou", { replace: true });
     } else if (status === "cancelled") {
       toast.error("Thanh toán VNPay bị huỷ hoặc thất bại!");
@@ -97,13 +96,13 @@ const CheckoutPage: React.FC = () => {
     setCustomerInfo({ ...customerInfo, [e.target.name]: e.target.value });
   };
 
-  // Build payload chung. Gửi cả product_id (nếu có) và variant_id để backend an toàn.
+
   const buildOrderData = () => ({
     customer_id: Number(localStorage.getItem("userId")),
     payment_method: paymentMethod,
     total,
     items: selectedItems.map((i) => {
-      // nếu cart item có productId dùng nó, nếu không gửi variantId tạm
+      
       const pid = (i as any).productId ?? i.variantId;
       return {
         product_id: pid,
@@ -125,9 +124,9 @@ const CheckoutPage: React.FC = () => {
     },
   });
 
-  // Gửi POST /api/customer/orders cho COD & VNPay
+ 
   const handleSubmitOrder = async () => {
-    // client validation
+   
     if (!customerInfo.name || !customerInfo.phone || !customerInfo.address || !customerInfo.email) {
       toast.error("Vui lòng điền đầy đủ thông tin khách hàng, bao gồm email!");
       return;
@@ -148,22 +147,16 @@ const CheckoutPage: React.FC = () => {
     const orderData = buildOrderData();
 
     try {
-      // đảm bảo token có trong header (nếu chưa set ở useEffect bên trên)
+     
       const token = localStorage.getItem("token");
       if (token) {
         api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
       }
-
       const { data } = await api.post("/api/customer/orders", orderData);
-
-      // VNPay flow: backend trả { url: "https://sandbox.vnpayment.vn/..." }
       if (data && data.url) {
-        // redirect browser to VNPay (frontend không xóa cart)
         window.location.href = data.url;
         return;
       }
-
-      // COD flow: 서버 đã xóa cart nếu clearCart true; client sync
       dispatch(clearCart());
       localStorage.removeItem("cartItems");
       toast.success("Đặt hàng thành công!", { autoClose: 1500, onClose: () => navigate("/thankyou") });

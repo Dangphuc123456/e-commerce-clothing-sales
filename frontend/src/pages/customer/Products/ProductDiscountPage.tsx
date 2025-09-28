@@ -1,4 +1,3 @@
-// src/pages/customer/ProductDiscountPage.tsx
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../../../api/axios";

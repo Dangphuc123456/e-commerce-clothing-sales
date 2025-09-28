@@ -1,4 +1,3 @@
-// src/pages/customer/SearchPage.tsx
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import api from "../../../api/axios";

@@ -65,6 +65,6 @@ func SetupAdminRoutes(r *mux.Router) {
 	adminRouter.HandleFunc("/orders", adminCtrl.GetAllOrders).Methods("GET")
 	adminRouter.HandleFunc("/orders/{id:[0-9]+}", adminCtrl.GetOrderDetail).Methods("GET")
 	adminRouter.HandleFunc("/orders/{id:[0-9]+}/status", adminCtrl.UpdateOrderStatus).Methods("PATCH")
-
+	// Search
 	adminRouter.HandleFunc("/search", adminCtrl.SearchAll).Methods("GET")
 }

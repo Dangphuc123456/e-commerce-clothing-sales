@@ -65,20 +65,13 @@ button:focus-visible {
   }
 }
 
-/* =========================
-   Custom phone input
-   ========================= */
 .custom-phone-input.no-border-inner .PhoneInputInput,
 .custom-phone-input.no-border-inner .PhoneInput {
   border: none !important;
   box-shadow: none !important;
 }
 
-/* =========================
-   Dashboard overrides
-   ========================= */
 
-/* Container chung */
 .dashboard-fluid {
   padding-left: 8px !important;
   padding-right: 8px !important;
@@ -94,7 +87,7 @@ button:focus-visible {
   padding-right: 8px !important;
 }
 
-/* Full bleed mode */
+
 .dashboard-fluid.full-bleed .dashboard-inner,
 .dashboard-inner.full-bleed {
   max-width: none !important;
@@ -104,11 +97,11 @@ button:focus-visible {
   padding-right: 4px !important;
 }
 
-/* Row gutter nhỏ */
+
 .row.gx-2 { --bs-gutter-x: 0.5rem !important; }
 .row.gx-1 { --bs-gutter-x: 0.25rem !important; }
 
-/* Card chung */
+
 .quick-card .card,
 .chart-card .card {
   border-radius: 10px !important;
@@ -116,62 +109,60 @@ button:focus-visible {
   overflow: hidden;
 }
 
-/* Card body */
+
 .quick-card .card-body,
 .chart-card .card-body {
   padding: 10px 12px !important;
-  overflow-x: auto; /* cho phép scroll ngang nếu nội dung rộng */
+  overflow-x: auto; 
 }
 
-/* Card title và metric */
+
 .card .card-title { font-size: 0.9rem !important; margin-bottom: 6px !important; }
 .card .metric { font-size: 1.15rem !important; font-weight: 600 !important; }
 
-/* Pie/Chart area */
+
 .pie-wrap { display:flex; align-items:center; justify-content:center; height:100%; }
 .chart-area { width:100%; height:100%; }
 
-/* Responsive nhỏ */
+
 @media (max-width: 767.98px) {
   .dashboard-fluid { padding-left: 6px !important; padding-right: 6px !important; }
   .quick-card .card-body { padding: 8px !important; }
 
-  /* Table responsive mobile */
   table {
     font-size: 0.85rem;
   }
 }
 
-/* Table chung */
 table {
   width: 100%;
-  min-width: 0; /* tránh tràn container */
+  min-width: 0; 
   border-collapse: collapse;
 }
 
-/* Nếu dùng Bootstrap, wrap table trong .table-responsive */
+
 .table-responsive {
   width: 100%;
   overflow-x: auto;
 }
 
-/* Card màu */
+
 .card.bg-warning.text-dark { color: #1e1e1e !important; }
 .card .card-body.text-center.text-white { padding-top: 12px !important; padding-bottom: 12px !important; }
-/* Buộc toàn bộ chữ luôn nhỏ, không bị override */
+
 html, body, .dashboard-fluid, .dashboard-inner {
   font-size: 13px !important; 
 }
 
-/* Các thẻ heading giảm lại */
+
 h1 { font-size: 13px !important; }
 h2 { font-size: 13px !important; }
 h3 { font-size: 13px !important; }
 
-/* Buttons */
+
 button { font-size: 0.875rem !important; }
 
-/* Card title & metric */
+
 .card .card-title { font-size: 0.8rem !important; }
 .card .metric { font-size: 1rem !important; }
 

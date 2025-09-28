@@ -1,6 +1,5 @@
 import React from "react";
 
-// Không import từ ChatPage, mà copy interface hoặc dùng inline
 interface Message {
   id: number;
   customer_id: number;

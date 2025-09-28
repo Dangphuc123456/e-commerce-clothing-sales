@@ -23,24 +23,17 @@ func GetPurchasesBySupplier(supplierID uint) ([]models.Purchase, error) {
 }
 
 func CreatePurchase(p *models.Purchase) (*models.Purchase, error) {
-    // KHÔNG set hoặc truyền p.Total khi tạo purchase
     if err := configs.DB.Omit("Total").Create(p).Error; err != nil {
         return nil, err
     }
-
-    // Lấy variant
     var variant models.ProductVariant
     if err := configs.DB.First(&variant, p.VariantID).Error; err != nil {
         return nil, errors.New("variant not found")
     }
-
-    // Cập nhật stock
     variant.Stock += p.Quantity
     if err := configs.DB.Save(&variant).Error; err != nil {
         return nil, err
     }
-
-    // Tạo InventoryLog
     log := models.InventoryLog{
         VariantID:  p.VariantID,
         ChangeType: "import",
@@ -61,21 +54,18 @@ func UpdatePurchase(id uint, newData *models.Purchase) (*models.Purchase, error)
         return nil, err
     }
 
-    // Lấy variant cũ
     var variant models.ProductVariant
     if err := configs.DB.First(&variant, p.VariantID).Error; err != nil {
         return nil, errors.New("variant not found")
     }
 
     oldQuantity := p.Quantity
-
-    // Nếu variantID thay đổi, rollback stock của variant cũ
+        // Nếu variant thay đổi, rollback stock của variant cũ và cập nhật variant mới
     if p.VariantID != newData.VariantID {
         variant.Stock -= oldQuantity
         if err := configs.DB.Save(&variant).Error; err != nil {
             return nil, err
         }
-
         // Ghi log rollback
         logRollback := models.InventoryLog{
             VariantID:  variant.ID,
@@ -147,7 +137,7 @@ func DeletePurchase(id uint) error {
     // Trừ stock
     variant.Stock -= p.Quantity
     if variant.Stock < 0 {
-        variant.Stock = 0 // tránh âm
+        variant.Stock = 0 
     }
     if err := configs.DB.Save(&variant).Error; err != nil {
         return err

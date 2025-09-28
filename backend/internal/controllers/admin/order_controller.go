@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// GET ALL ORDERS (có thể lọc theo status)
+// GET ALL ORDERS 
 func GetAllOrders(w http.ResponseWriter, r *http.Request) {
 	status := r.URL.Query().Get("status")
 
@@ -21,8 +21,6 @@ func GetAllOrders(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to fetch orders", http.StatusInternalServerError)
 		return
 	}
-
-	// Lọc theo status nếu có
 	if status != "" {
 		filtered := []models.Order{}
 		for _, o := range orders {
@@ -58,23 +56,18 @@ func GetOrderDetail(w http.ResponseWriter, r *http.Request) {
 
 // UPDATE ORDER STATUS + lưu StaffID từ JWT
 func UpdateOrderStatus(w http.ResponseWriter, r *http.Request) {
-	// Lấy staffID từ context
 	claims := middlewares.GetUserFromContext(r)
 	if claims == nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 	staffID := claims.UserID
-
-	// Lấy order ID từ URL
 	idParam := mux.Vars(r)["id"]
 	orderID, err := strconv.Atoi(idParam)
 	if err != nil {
 		http.Error(w, "Invalid order ID", http.StatusBadRequest)
 		return
 	}
-
-	// Lấy body
 	var body struct {
 		Status string `json:"status"`
 	}
@@ -82,8 +75,6 @@ func UpdateOrderStatus(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
-
-	// Cập nhật trạng thái + staffID
 	if err := orderRepo.UpdateOrderStatus(uint(orderID), body.Status, staffID); err != nil {
 		http.Error(w, "Failed to update order", http.StatusInternalServerError)
 		return

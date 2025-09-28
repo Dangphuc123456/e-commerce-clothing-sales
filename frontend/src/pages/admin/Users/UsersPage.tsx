@@ -26,7 +26,7 @@ const UsersPage: React.FC = () => {
   const [deleteCountdown, setDeleteCountdown] = useState(5);
   const [confirmDisabled, setConfirmDisabled] = useState(true);
 
-  // Pagination
+ 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
@@ -123,7 +123,7 @@ const UsersPage: React.FC = () => {
 
   const handleChangeItemsPerPage = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setItemsPerPage(parseInt(e.target.value));
-    setCurrentPage(1); // reset về trang 1
+    setCurrentPage(1); 
   };
 
   return (

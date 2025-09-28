@@ -26,7 +26,7 @@ func GetCategoryDetail(id uint) (*models.Category, error) {
 
 // CreateCategory tạo mới
 func CreateCategory(c *models.Category) (*models.Category, error) {
-    c.Slug = slug.Make(c.Name) // Tự động tạo slug từ name
+    c.Slug = slug.Make(c.Name) 
     if err := configs.DB.Create(c).Error; err != nil {
         return nil, err
     }

@@ -34,9 +34,11 @@ interface UserInfo {
   role: string;
   username: string;
 }
+
 interface NavbarProps {
   onSelectCustomer: (id: number) => void;
 }
+
 const Navbar: React.FC<NavbarProps> = ({ onSelectCustomer }) => {
   const [orderNotifications, setOrderNotifications] = useState(0);
   const [pendingOrders, setPendingOrders] = useState<any[]>([]);
@@ -52,6 +54,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSelectCustomer }) => {
   const navigate = useNavigate();
 
   const [user, setUser] = useState<UserInfo | null>(null);
+  const [usersMap, setUsersMap] = useState<Record<number, { username?: string; name?: string }>>({});
 
   // ===================== CHECK LOGIN =====================
   useEffect(() => {
@@ -75,6 +78,24 @@ const Navbar: React.FC<NavbarProps> = ({ onSelectCustomer }) => {
     setUser(null);
     navigate("/login");
   };
+
+  // ===================== FETCH USERS =====================
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const res = await api.get("/api/admin/users");
+        const map: Record<number, any> = {};
+        res.data.forEach((user: any) => {
+          map[user.id] = user;
+        });
+        setUsersMap(map);
+      } catch (err) {
+        console.error("Error fetching users:", err);
+      }
+    };
+    fetchUsers();
+  }, []);
+
   // ===================== MESSAGE NOTIFICATIONS =====================
   const [messageList, setMessageList] = useState<any[]>([]);
 
@@ -89,13 +110,11 @@ const Navbar: React.FC<NavbarProps> = ({ onSelectCustomer }) => {
     };
 
     fetchMessages();
-    const interval = setInterval(fetchMessages, 3000); // auto refresh
+    const interval = setInterval(fetchMessages, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  // 👉 badge chỉ tính số khách có tin chưa đọc
   const totalUnread = messageList.filter(item => (item.unread_count || 0) > 0).length;
-
 
   // ===================== SEARCH =====================
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,9 +199,9 @@ const Navbar: React.FC<NavbarProps> = ({ onSelectCustomer }) => {
         left: 0,
         right: 0,
         zIndex: 1000,
-      }}
-    >
+      }}>
       <Container fluid style={{ position: "relative" }}>
+        {/* Logo */}
         <BsNavbar.Brand
           as={Link}
           to={user?.role === "admin" ? "/admin/dashboard" : "/"}
@@ -191,8 +210,7 @@ const Navbar: React.FC<NavbarProps> = ({ onSelectCustomer }) => {
             src={logo}
             alt="Logo"
             style={{ maxWidth: "120px", height: "78px" }}
-            className="d-inline-block align-top me-2 img-fluid"
-          />
+            className="d-inline-block align-top me-2 img-fluid" />
         </BsNavbar.Brand>
 
         {/* Toggle mobile */}
@@ -200,12 +218,96 @@ const Navbar: React.FC<NavbarProps> = ({ onSelectCustomer }) => {
           className="btn btn-link text-white p-1 d-lg-none"
           aria-label="Toggle menu"
           onClick={() => setShowNavPanel((s) => !s)}
-          style={{ textDecoration: "none" }}
-        >
+          style={{ textDecoration: "none" }}>
           {showNavPanel ? <FaTimes size={20} /> : <FaBars size={20} />}
         </button>
 
-        {/* Nav desktop */}
+        {/* Mobile menu slide-in */}
+        <div className={`mobile-nav-panel ${showNavPanel ? "open" : ""}`}>
+          <div className="p-3">
+            <div style={{ position: "relative", maxWidth: "400px", width: "100%" }} className="mx-auto my-2 my-lg-0">
+              <Form className="d-flex">
+                <FormControl
+                  type="search"
+                  placeholder="Tìm kiếm..."
+                  className="me-2"
+                  style={{ borderRadius: "4px", height: "40px" }}
+                  value={keyword}
+                  onChange={handleChange}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                />
+              </Form>
+              {showDropdown && (
+                <ul
+                  className="list-group position-absolute w-100 mt-1 shadow"
+                  style={{ zIndex: 2000, maxHeight: "250px", overflowY: "auto" }}>
+                  {loading && <li className="list-group-item text-muted">Đang tìm...</li>}
+                  {!loading && results.length === 0 && <li className="list-group-item text-muted">Không có kết quả</li>}
+                  {!loading && results.map((item) => (
+                    <li
+                      key={`${item.type}-${item.id}`}
+                      className="list-group-item list-group-item-action"
+                      onClick={() => handleSelect(item)}
+                      style={{ cursor: "pointer" }}>
+                      <strong>{item.name}</strong> <span className="text-muted">({typeLabels[item.type] || item.type})</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            {/* Orders */}
+            <Dropdown className="mb-2">
+              <Dropdown.Toggle variant="light">Đơn hàng ({orderNotifications})</Dropdown.Toggle>
+              <Dropdown.Menu>
+                {pendingOrders.length === 0 && <Dropdown.Item>Không có đơn hàng</Dropdown.Item>}
+                {pendingOrders.map((order) => {
+                  const customer = usersMap[order.customer_id];
+                  const name = customer ? `Khách hàng: ${customer.username || customer.name}` : "Khách hàng";
+                  return (
+                    <Dropdown.Item
+                      key={order.id}
+                      onClick={() => {
+                        navigate(`/admin/orders/${order.id}`);
+                        setShowNavPanel(false);
+                      }}>
+                      Mã Order: {order.id} - {name} ({order.status})
+                    </Dropdown.Item>
+                  );
+                })}
+              </Dropdown.Menu>
+            </Dropdown>
+
+            {/* Messages */}
+            <Dropdown className="mb-2">
+              <Dropdown.Toggle variant="light">Tin nhắn ({totalUnread})</Dropdown.Toggle>
+              <Dropdown.Menu>
+                {messageList.length === 0 && <Dropdown.Item>Không có tin nhắn</Dropdown.Item>}
+                {messageList.map((cus) => (
+                  <Dropdown.Item
+                    key={cus.customer_id}
+                    onClick={() => {
+                      onSelectCustomer(cus.customer_id);
+                      setShowNavPanel(false);
+                    }}>
+                    {cus.customer_name} ({cus.unread_count} chưa đọc)
+                  </Dropdown.Item>
+
+                ))}
+              </Dropdown.Menu>
+            </Dropdown>
+
+            {/* User */}
+            <Dropdown>
+              <Dropdown.Toggle variant="light">{user?.username || "Tài khoản"}</Dropdown.Toggle>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={handleLogout} className="text-danger fw-bold">Logout</Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
+        </div>
+
+        {/* Desktop nav */}
         <div className="d-none d-lg-flex w-100">
           {/* Search */}
           <div style={{ position: "relative", maxWidth: "400px", width: "100%" }} className="mx-auto my-2 my-lg-0">
@@ -227,23 +329,22 @@ const Navbar: React.FC<NavbarProps> = ({ onSelectCustomer }) => {
                 style={{ zIndex: 2000, maxHeight: "250px", overflowY: "auto" }}>
                 {loading && <li className="list-group-item text-muted">Đang tìm...</li>}
                 {!loading && results.length === 0 && <li className="list-group-item text-muted">Không có kết quả</li>}
-                {!loading &&
-                  results.map((item) => (
-                    <li
-                      key={`${item.type}-${item.id}`}
-                      className="list-group-item list-group-item-action"
-                      onClick={() => handleSelect(item)}
-                      style={{ cursor: "pointer" }}>
-                      <strong>{item.name}</strong> <span className="text-muted">({typeLabels[item.type] || item.type})</span>
-                    </li>
-                  ))}
+                {!loading && results.map((item) => (
+                  <li
+                    key={`${item.type}-${item.id}`}
+                    className="list-group-item list-group-item-action"
+                    onClick={() => handleSelect(item)}
+                    style={{ cursor: "pointer" }}>
+                    <strong>{item.name}</strong> <span className="text-muted">({typeLabels[item.type] || item.type})</span>
+                  </li>
+                ))}
               </ul>
             )}
           </div>
 
           {/* Icons */}
           <Nav className="ms-auto d-flex align-items-center gap-3">
-            {/* Order notifications */}
+            {/* Orders */}
             <Dropdown align="end">
               <Dropdown.Toggle variant="link" className="position-relative text-white" style={{ textDecoration: "none" }}>
                 <FaBell size={20} />
@@ -256,22 +357,23 @@ const Navbar: React.FC<NavbarProps> = ({ onSelectCustomer }) => {
               <Dropdown.Menu style={{ minWidth: "300px" }}>
                 <Dropdown.Header className="fs-6">Đơn hàng chờ xử lý</Dropdown.Header>
                 {pendingOrders.length === 0 && <Dropdown.Item>Không có đơn hàng</Dropdown.Item>}
-                {pendingOrders.map((order) => (
-                  <Dropdown.Item key={order.id} onClick={() => navigate(`/admin/orders/${order.id}`)}>
-                    Mã Order :{order.id} - {order.customer?.username || "Khách hàng"} ({order.status})
-                  </Dropdown.Item>
-                ))}
+                {pendingOrders.map((order) => {
+                  const customer = usersMap[order.customer_id];
+                  const name = customer ? `Khách hàng: ${customer.username || customer.name}` : "Khách hàng";
+                  return (
+                    <Dropdown.Item key={order.id} onClick={() => navigate(`/admin/orders/${order.id}`)}>
+                      Mã Order: {order.id} - {name} ({order.status})
+                    </Dropdown.Item>
+                  );
+                })}
                 <Dropdown.Divider />
                 <Dropdown.Item as={Link} to="/admin/orders">Xem tất cả</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown>
 
-            {/* Message Notifications */}
+            {/* Messages */}
             <Dropdown align="end">
-              <Dropdown.Toggle
-                variant="link"
-                className="position-relative text-white"
-                style={{ textDecoration: "none" }}>
+              <Dropdown.Toggle variant="link" className="position-relative text-white" style={{ textDecoration: "none" }}>
                 <FaEnvelope size={20} />
                 {totalUnread > 0 && (
                   <Badge
@@ -284,12 +386,8 @@ const Navbar: React.FC<NavbarProps> = ({ onSelectCustomer }) => {
                 )}
               </Dropdown.Toggle>
               <Dropdown.Menu style={{ minWidth: "320px" }}>
-                <Dropdown.Header className="fs-6">
-                  Tin nhắn khách hàng
-                </Dropdown.Header>
-                {messageList.length === 0 && (
-                  <Dropdown.Item>Không có tin nhắn</Dropdown.Item>
-                )}
+                <Dropdown.Header className="fs-6">Tin nhắn khách hàng</Dropdown.Header>
+                {messageList.length === 0 && <Dropdown.Item>Không có tin nhắn</Dropdown.Item>}
                 {messageList.map((cus) => (
                   <Dropdown.Item
                     key={cus.customer_id}
@@ -298,25 +396,22 @@ const Navbar: React.FC<NavbarProps> = ({ onSelectCustomer }) => {
                     <img
                       src={"/assets/users.jfif"}
                       alt="avatar"
-                      style={{ width: 26, height: 26, borderRadius: "50%", marginRight: 8 }}/>
+                      style={{ width: 26, height: 26, borderRadius: "50%", marginRight: 8 }} />
                     <span>{cus.customer_name}</span>
-                    {" "}
-                    {cus.unread_count > 0
-                      ? `(${cus.unread_count} chưa đọc)`
-                      : "(đã đọc)"}
+                    {" "} {cus.unread_count > 0 ? `(${cus.unread_count} chưa đọc)` : "(đã đọc)"}
                     <br />
                     <small className="text-muted">{cus.last_message}</small>
                   </Dropdown.Item>
                 ))}
               </Dropdown.Menu>
             </Dropdown>
-            {/* User dropdown */}
+
+            {/* User */}
             <Dropdown align="end">
               <Dropdown.Toggle
                 variant="light"
                 id="dropdown-small"
-                style={{ backgroundColor: "white", color: "navy" }}
-              >
+                style={{ backgroundColor: "white", color: "navy" }}>
                 {user?.username || "Tài khoản"}
               </Dropdown.Toggle>
               <Dropdown.Menu>

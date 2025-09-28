@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-// getClientIP giống như trong code bạn gửi
+// Lấy địa chỉ IP của client từ request
 func getClientIP(r *http.Request) string {
 	xff := strings.TrimSpace(r.Header.Get("X-Forwarded-For"))
 	if xff != "" {
@@ -54,30 +54,24 @@ func getClientIP(r *http.Request) string {
 // PlaceOrderRequest giống kiểu bạn đang dùng
 type PlaceOrderRequest struct {
 	CustomerID    uint                   `json:"customer_id"`
-	PaymentMethod string                 `json:"payment_method"` // cod | vnpay
+	PaymentMethod string                 `json:"payment_method"` 
 	Total         float64                `json:"total"`
 	Items         []models.OrderItem     `json:"items"`
 	Address       models.CustomerAddress `json:"address"`
 }
 
 // POST /api/customer/orders
-// Tạo order cho cả COD và VNPay.
-// - COD: tạo order, xoá cart, gửi email, trả order JSON.
-// - VNPay: tạo order (không xoá cart), tạo URL VNPay trả về cho frontend (frontend redirect).
 func PlaceOrderHandler(w http.ResponseWriter, r *http.Request) {
 	var req PlaceOrderRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
-
-	// basic validation
 	if req.CustomerID == 0 || len(req.Items) == 0 {
 		http.Error(w, "Missing customer_id or items", http.StatusBadRequest)
 		return
 	}
 
-	// dùng UnixNano để giảm rủi ro trùng TxnRef
 	txnRef := fmt.Sprintf("%d-%d", time.Now().UnixNano(), req.CustomerID)
 
 	order := models.Order{
@@ -91,8 +85,8 @@ func PlaceOrderHandler(w http.ResponseWriter, r *http.Request) {
 
 	address := &req.Address
 
-	// Nếu là COD: tạo và xoá cart luôn.
-	// Nếu là VNPAY: tạo order nhưng không xoá cart — sẽ xoá khi VNPay callback thành công.
+	//For COD: always create and delete the cart.
+    //For VNPAY: create the order but do not delete the cart — it will be deleted when the VNPay callback succeeds.
 	clearCart := false
 	if strings.ToLower(req.PaymentMethod) == "cod" {
 		clearCart = true
@@ -103,7 +97,7 @@ func PlaceOrderHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Nếu COD -> gửi email xác nhận và trả order
+	// For COD: send a confirmation email and return the order.
 	if strings.ToLower(order.PaymentMethod) == "cod" {
 		var emailItems []map[string]interface{}
 		for _, item := range order.Items {
@@ -116,7 +110,7 @@ func PlaceOrderHandler(w http.ResponseWriter, r *http.Request) {
 				"color":    item.Color,
 			})
 		}
-		// gửi email (nếu thất bại chỉ log)
+		// Send email 
 		if err := service.SendOrderEmail(address.Email, emailItems); err != nil {
 			log.Println("Failed to send order email:", err)
 		}
@@ -129,9 +123,9 @@ func PlaceOrderHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Nếu VNPay -> tạo URL và trả về cho frontend (frontend redirect)
+	// For VNPay: create the payment URL and return it to the frontend (frontend redirect).
 	if strings.ToLower(order.PaymentMethod) == "vnpay" {
-		amount := int(math.Round(req.Total * 100)) // VNPay yêu cầu VND * 100
+		amount := int(math.Round(req.Total * 100)) 
 		orderInfo := fmt.Sprintf("Thanh toán đơn hàng -%s", order.TxnRef)
 
 		params := map[string]string{
@@ -160,7 +154,6 @@ func PlaceOrderHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// unsupported payment method
 	http.Error(w, "Invalid payment method", http.StatusBadRequest)
 }
 
@@ -196,8 +189,6 @@ func VnpayReturnHandler(w http.ResponseWriter, r *http.Request) {
 	if err := customerRepo.UpdateOrderStatus(order.ID, newStatus); err != nil {
 		log.Println("Failed to update order status:", err)
 	}
-
-	// Nếu thanh toán thành công thì clear cart
 	if newStatus == "confirmed" {
     rows, err := customerRepo.ClearCartAfterPayment(uint(order.CustomerID))
     if err != nil {
@@ -223,7 +214,6 @@ func GetCustomerOrdersHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	userID, ok := uidVal.(uint)
 	if !ok {
-		// nếu JWT middleware trả int/float cần convert (tùy impl)
 		http.Error(w, "Invalid user id type in context", http.StatusInternalServerError)
 		return
 	}

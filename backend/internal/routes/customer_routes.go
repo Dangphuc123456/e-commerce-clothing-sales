@@ -30,7 +30,6 @@ func SetupCustomerRoutes(r *mux.Router) {
 	custRouter.HandleFunc("/cart/clear/{userId}", customerCtrl.ClearCart).Methods("DELETE")
 
 	custRouter.HandleFunc("/orders", customerCtrl.PlaceOrderHandler).Methods("POST")
-	// VNPay return (callback redirect)
 
 	custRouter.HandleFunc("/orders/processing", customerCtrl.GetProcessingOrdersHandler).Methods("GET")
     custRouter.HandleFunc("/orders/history", customerCtrl.GetOrderHistoryHandler).Methods("GET")

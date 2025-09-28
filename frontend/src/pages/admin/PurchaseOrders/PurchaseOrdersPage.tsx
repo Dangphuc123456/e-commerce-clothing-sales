@@ -42,7 +42,7 @@ const PurchaseOrdersPage: React.FC = () => {
   const [formData, setFormData] = useState<Partial<Purchase>>({});
   const [editing, setEditing] = useState(false);
 
-  // pagination
+  
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(12);
 
@@ -100,7 +100,7 @@ const PurchaseOrdersPage: React.FC = () => {
     }
   };
 
-  // Pagination logic
+ 
   const totalPages = Math.ceil(purchases.length / itemsPerPage);
   const paginatedPurchases = purchases.slice(
     (currentPage - 1) * itemsPerPage,

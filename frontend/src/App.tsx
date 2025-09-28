@@ -1,17 +1,16 @@
-// src/App.tsx
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// Auth pages
+
 import Register from "./pages/auth/Register";
 import Login from "./pages/auth/Login";
 import CompletePage from "./pages/auth/CompletePage";
 import FailPage from "./pages/auth/FailPage";
 import ChatPage from "./components/client/Chat/ChatPage";
 
-// Admin layout & pages
+
 import MainLayout from "./layouts/admin/MainLayout";
 import DashboardPage from "./pages/admin/Dashboard/DashboardPage";
 import UsersPage from "./pages/admin/Users/UsersPage";
@@ -27,11 +26,11 @@ import CategoryDetailPage from "./pages/admin/Category/CategoryDetailPage";
 import LogPage from "./pages/admin/Loginlog/LogPage";
 import OrderDetailPage from "./pages/admin/Orders/OrdersDetailPage";
 
-// Customer layout & pages
+
 import ClientMainLayout from "./layouts/client/ClientMainLayout";
 import HomePage from "./pages/customer/Home/HomePage";
 import CategoriesPage from "./pages/customer/Categories/CategoriesPage";
-import ProductDetailPageCustomer from "./pages/customer/Products/ProductDetailPage"; // Customer
+import ProductDetailPageCustomer from "./pages/customer/Products/ProductDetailPage"; 
 import ProductPage from "./pages/customer/Products/ProductPage";
 import SearchPage from "./pages/customer/Search/SearchPage";
 import CartPage from "./pages/customer/Cart/CartPage";

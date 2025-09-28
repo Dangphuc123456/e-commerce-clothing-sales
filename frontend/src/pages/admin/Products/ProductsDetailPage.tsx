@@ -1,4 +1,3 @@
-// src/pages/admin/ProductDetailPage.tsx
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Table, Button, Modal, Form, Spinner, Card, Image, Row, Col } from "react-bootstrap";
@@ -27,7 +26,7 @@ interface Variant {
   price?: number;
   stock?: number;
   sku?: string;
-  image?: string; // "/assets/..."
+  image?: string; 
 
 }
 
@@ -107,7 +106,7 @@ const ProductDetailPage: React.FC = () => {
     }
   };
 
-  // ---------- Add variant ----------
+  
   const openAddVariant = () => {
     setEditingVariant(null);
     setForm({ size: "", color: "", price: 0, stock: 0, sku: "", image: "" });
@@ -116,7 +115,6 @@ const ProductDetailPage: React.FC = () => {
 
   const handleCreateVariant = async () => {
     try {
-      // include product_id to be safe; backend may also read productId from URL
       await api.post(`/api/admin/products/${productId}/variants`, {
         ...form,
         product_id: productId,
@@ -129,7 +127,7 @@ const ProductDetailPage: React.FC = () => {
     }
   };
 
-  // ---------- Edit variant ----------
+ 
   const openEditVariant = (v: Variant) => {
     setEditingVariant(v);
     setForm({
@@ -158,7 +156,7 @@ const ProductDetailPage: React.FC = () => {
     }
   };
 
-  // ---------- Delete ----------
+
   const handleDeleteVariant = async (variantId?: number) => {
     if (!variantId) return;
     if (!window.confirm("Are you sure to delete this variant?")) return;
@@ -177,7 +175,7 @@ const ProductDetailPage: React.FC = () => {
   const indexOfFirst = indexOfLast - itemsPerPage;
   const currentVariants = variants.slice(indexOfFirst, indexOfLast);
   const getPageNumbers = () => {
-    const windowSize = 3; // số trang hiển thị
+    const windowSize = 3; 
     let start = currentPage - 1;
     let end = currentPage + 1;
 

@@ -107,7 +107,7 @@ func GetAllVariants(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(variants) // <-- trả về [] luôn, không bọc "data"
+	json.NewEncoder(w).Encode(variants) 
 }
 
 // CREATE VARIANT
@@ -117,7 +117,6 @@ func CreateVariant(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
-	// req.Image sẽ nhận giá trị từ FE
 	variant, err := admin.CreateVariant(&req)
 	if err != nil {
 		http.Error(w, "Failed to create variant", http.StatusInternalServerError)
@@ -135,7 +134,6 @@ func EditVariant(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid input", http.StatusBadRequest)
 		return
 	}
-	// req.Image sẽ nhận giá trị từ FE
 	variant, err := admin.UpdateVariant(uint(id), &req)
 	if err != nil {
 		http.Error(w, "Failed to update variant", http.StatusInternalServerError)

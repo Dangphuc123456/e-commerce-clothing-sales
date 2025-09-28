@@ -22,13 +22,13 @@ const SuppliersPage: React.FC = () => {
   const [suppliers, setSuppliers] = useState<Supplier[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // modals & form
+  
   const [showAdd, setShowAdd] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [activeSupplier, setActiveSupplier] = useState<Partial<Supplier>>({});
 
-  // pagination
+  
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(12);
 
@@ -47,21 +47,21 @@ const SuppliersPage: React.FC = () => {
 
   useEffect(() => { loadSuppliers(); }, []);
 
-  // pagination logic
+  
   const totalPages = Math.ceil(suppliers.length / itemsPerPage);
   const paginatedSuppliers = suppliers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  // hiển thị 2 số trang trượt
+  
   const getVisiblePages = () => {
     if (totalPages <= 2) return Array.from({ length: totalPages }, (_, i) => i + 1);
     if (currentPage === totalPages) return [totalPages - 1, totalPages];
     return [currentPage, currentPage + 1];
   };
 
-  // scroll lên đầu bảng khi đổi trang
+  
   useEffect(() => { window.scrollTo({ top: 0, behavior: "smooth" }); }, [currentPage]);
 
   // Add

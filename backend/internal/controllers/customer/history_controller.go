@@ -11,14 +11,11 @@ import (
 
 // GET /api/customer/orders/processing
 func GetProcessingOrdersHandler(w http.ResponseWriter, r *http.Request) {
-	// Lấy thông tin user từ context
 	claims := middlewares.GetUserFromContext(r)
 	if claims == nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-
-	// Chỉ lấy các đơn hàng đang xử lý
 	statuses := []string{"pending", "confirmed", "shipped"}
 	orders, err := customerRepo.GetCustomerOrdersByStatus(claims.UserID, statuses)
 	if err != nil {
@@ -34,14 +31,11 @@ func GetProcessingOrdersHandler(w http.ResponseWriter, r *http.Request) {
 
 // GET /api/customer/orders/history
 func GetOrderHistoryHandler(w http.ResponseWriter, r *http.Request) {
-	// Lấy thông tin user từ context
 	claims := middlewares.GetUserFromContext(r)
 	if claims == nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-
-	// Chỉ lấy các đơn hàng đã hoàn thành hoặc hủy
 	statuses := []string{"completed", "cancelled"}
 	orders, err := customerRepo.GetCustomerOrdersByStatus(claims.UserID, statuses)
 	if err != nil {
@@ -60,16 +54,12 @@ func CancelOrderHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-
-	// Lấy orderID từ URL
 	vars := mux.Vars(r)
 	orderID, err := strconv.ParseUint(vars["id"], 10, 64)
 	if err != nil {
 		http.Error(w, "Invalid order ID", http.StatusBadRequest)
 		return
 	}
-
-	// Lấy lý do hủy từ body
 	var req struct {
 		Reason string `json:"reason"`
 	}
@@ -78,7 +68,6 @@ func CancelOrderHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Gọi repository hủy
 	if err := customerRepo.CancelOrder(uint(orderID), claims.UserID, req.Reason); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

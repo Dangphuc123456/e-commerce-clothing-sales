@@ -1,7 +1,7 @@
 import React from "react";
 import MessageItem from "./MessageItem";
 
-// Dùng cùng interface với MessageItem
+
 interface Message {
   id: number;
   customer_id: number;

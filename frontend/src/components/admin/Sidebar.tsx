@@ -51,7 +51,7 @@ const Sidebar: React.FC<SidebarProps> = ({ collapsed, setCollapsed }) => {
     >
       <Nav className="flex-column flex-grow-1">
         {navItems.map((item) => {
-          // kiểm tra role
+        
           if (item.roles && !item.roles.includes(role)) return null;
 
           const isActive = location.pathname === item.path;

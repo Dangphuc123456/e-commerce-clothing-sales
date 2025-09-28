@@ -67,7 +67,6 @@ func GetAllVariants() ([]models.ProductVariant, error) {
 	return variants, err
 }
 func CreateVariant(v *models.ProductVariant) (*models.ProductVariant, error) {
-	// Kiểm tra trùng SKU
 	var count int64
 	configs.DB.Model(&models.ProductVariant{}).Where("sku = ?", v.SKU).Count(&count)
 	if count > 0 {
@@ -84,7 +83,6 @@ func UpdateVariant(id uint, newData *models.ProductVariant) (*models.ProductVari
 	if err := configs.DB.First(&v, id).Error; err != nil {
 		return nil, err
 	}
-	// Kiểm tra trùng SKU với bản ghi khác
 	var count int64
 	configs.DB.Model(&models.ProductVariant{}).
 		Where("sku = ? AND id <> ?", newData.SKU, id).

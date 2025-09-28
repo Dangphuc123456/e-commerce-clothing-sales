@@ -12,7 +12,6 @@ type Purchase struct {
 	Total      float64   `gorm:"->" json:"total"`
 	CreatedAt time.Time `json:"created_at"`
 
-	// Quan hệ
 	Supplier Supplier       `gorm:"foreignKey:SupplierID" json:"supplier"`
 	Staff    User           `gorm:"foreignKey:StaffID" json:"staff"`
 	Variant  ProductVariant `gorm:"foreignKey:VariantID" json:"variant"`

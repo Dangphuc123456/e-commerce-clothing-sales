@@ -9,7 +9,7 @@ import (
 func SearchAll(w http.ResponseWriter, r *http.Request) {
     keyword := r.URL.Query().Get("q")
     if len(keyword) == 0 {
-        json.NewEncoder(w).Encode([]interface{}{}) // trả về mảng rỗng nếu không có keyword
+        json.NewEncoder(w).Encode([]interface{}{}) 
         return
     }
     results, err := admin.SearchAll(keyword)

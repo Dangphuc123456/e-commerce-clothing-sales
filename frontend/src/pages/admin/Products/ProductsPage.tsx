@@ -125,13 +125,13 @@ const ProductsPage: React.FC = () => {
     }
   };
 
-  // Pagination logic
+  
   const totalPages = Math.max(1, Math.ceil(products.length / itemsPerPage));
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Hiển thị 2 số trang trượt theo currentPage
+ 
   const getVisiblePages = () => {
     if (totalPages <= 2) return Array.from({ length: totalPages }, (_, i) => i + 1);
     if (currentPage === totalPages) return [totalPages - 1, totalPages];

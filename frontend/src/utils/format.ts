@@ -1,5 +1,3 @@
-// utils/format.ts
-
 export const formatCurrency = (num: number | string) => {
   if (num === null || num === undefined || isNaN(Number(num))) return "0₫";
   const n = Number(num);

@@ -106,16 +106,15 @@ const YourOrdersPage: React.FC = () => {
     }
 
     try {
-      setShowCancelModal(false);
       await api.post(`/api/customer/orders/${cancelOrderId}/cancel`, { reason: cancelReason });
-
-      toast.success(" Đơn hàng đã được hủy!");
+      toast.success("Đơn hàng đã được hủy!");
+      setShowCancelModal(false);
       setCancelReason("");
       setCancelOrderId(null);
       fetchOrders(true);
     } catch (err) {
       console.error("Hủy đơn lỗi:", err);
-      toast.error(" Không thể hủy đơn hàng!");
+      toast.error("Không thể hủy đơn hàng!");
     }
   };
 
@@ -133,57 +132,57 @@ const YourOrdersPage: React.FC = () => {
       <h3 className="mb-3 fs-4">Đơn hàng của bạn</h3>
       <>
         <Button
-        variant="success"
-        style={{ position: "fixed", bottom: 79, right: 20, zIndex: 1050 }}
-        onClick={() => setShowChat(true)}>
-        💬 Liên hệ bên bán 
-      </Button>
+          variant="success"
+          style={{ position: "fixed", bottom: 79, right: 20, zIndex: 1050 }}
+          onClick={() => setShowChat(true)}>
+          💬 Liên hệ bên bán
+        </Button>
 
-      {showChat && (
-        <div
-          style={{
-            position: "fixed",
-            bottom: 70,
-            right: 20,
-            width: 360,
-            maxWidth: "90vw",
-            height: 500,
-            maxHeight: "80vh",
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            background: "#fff",
-            display: "flex",
-            flexDirection: "column",
-            zIndex: 1100,
-            boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
-          }}>
-          {/* Header */}
+        {showChat && (
           <div
             style={{
-              padding: "10px 15px",
-              borderBottom: "1px solid #eee",
+              position: "fixed",
+              bottom: 70,
+              right: 20,
+              width: 360,
+              maxWidth: "90vw",
+              height: 500,
+              maxHeight: "80vh",
+              border: "1px solid #ccc",
+              borderRadius: "8px",
+              background: "#fff",
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              background: "#f8f8f8",
-              flexShrink: 0,
+              flexDirection: "column",
+              zIndex: 1100,
+              boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
             }}>
-            <strong>Hỗ trợ khách hàng</strong>
-            <Button
-              size="sm"
-              variant="secondary"
-              onClick={() => setShowChat(false)}>
-              X
-            </Button>
-          </div>
+            {/* Header */}
+            <div
+              style={{
+                padding: "10px 15px",
+                borderBottom: "1px solid #eee",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                background: "#f8f8f8",
+                flexShrink: 0,
+              }}>
+              <strong>Hỗ trợ khách hàng</strong>
+              <Button
+                size="sm"
+                variant="secondary"
+                onClick={() => setShowChat(false)}>
+                X
+              </Button>
+            </div>
 
-          {/* Tin nhắn scroll */}
-          <div style={{ flex: 1, overflowY: "auto" }}>
-            <ChatPage
-              role="customer"
-              customerId={parseInt(localStorage.getItem("userId") || "0")}/>
+            {/* Tin nhắn scroll */}
+            <div style={{ flex: 1, overflowY: "auto" }}>
+              <ChatPage
+                role="customer"
+                customerId={parseInt(localStorage.getItem("userId") || "0")} />
+            </div>
           </div>
-        </div>
         )}
       </>
       <div className="d-flex flex-column gap-3">
@@ -234,7 +233,7 @@ const YourOrdersPage: React.FC = () => {
             </Card>
           ))
         ) : (
-          <div className="text-center">Chưa có đơn hàng hoặc đơn hàng đã hoàn thành</div>
+          <div className="text-center">Chưa có đơn hàng / Đơn hàng đã hoàn thành / Đơn hàng đã bị hủy</div>
         )}
       </div>
 

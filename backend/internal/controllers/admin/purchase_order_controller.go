@@ -20,7 +20,7 @@ func GetAllPurchasesGlobal(w http.ResponseWriter, r *http.Request) {
         return
     }
     w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(purchases) // <-- trả về [] luôn, không bọc "data"
+    json.NewEncoder(w).Encode(purchases) 
 }
 
 // POST /api/admin/purchases  (body must include supplier_id)

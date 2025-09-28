@@ -37,7 +37,7 @@ func JWTMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		// Gắn claims vào context
+		// Attach claims to context
 		ctx := context.WithValue(r.Context(), userContextKey, claims)
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})

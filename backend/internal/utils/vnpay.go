@@ -19,9 +19,6 @@ func HmacSHA512(data, secret string) string {
 }
 
 // CreateVnpayUrl: tạo URL VNPay chuẩn
-// - Hash được tạo trên payload: các key A-Z, value được URL-escaped (QueryEscape), nối bằng &
-// - Khi gửi, query string sẽ được encode bằng url.Values.Encode()
-// - Thêm vnp_SecureHashType=SHA512 và vnp_SecureHash
 func CreateVnpayUrl(params map[string]string, secret, baseUrl string) string {
 	// 1. Sắp xếp key
 	keys := make([]string, 0, len(params))

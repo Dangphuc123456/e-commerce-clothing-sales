@@ -37,7 +37,7 @@ func GetOrderDetail(id uint) (*models.Order, error) {
 		Where("user_id = ? AND is_default = ?", order.CustomerID, true).
 		First(&address).Error
 	if err == nil {
-		order.CustomerAddress = &address // gán cho field FE
+		order.CustomerAddress = &address 
 	}
 
 	return &order, nil

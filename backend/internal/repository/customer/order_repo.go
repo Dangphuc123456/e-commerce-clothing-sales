@@ -27,6 +27,7 @@ func CreateOrder(order *models.Order, address *models.CustomerAddress, userID ui
 
         // 3. Lưu address mới (dùng user_id)
         address.UserID = order.CustomerID
+        address.IsDefault = true
         if err := tx.Create(address).Error; err != nil {
             return err
         }

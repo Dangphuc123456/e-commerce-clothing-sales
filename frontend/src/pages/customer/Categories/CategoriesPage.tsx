@@ -151,7 +151,7 @@ const CategoryPage: React.FC = () => {
   return (
     <Container className="my-4">
       <nav
-        aria-label="breadcrumb"style={{
+        aria-label="breadcrumb" style={{
           backgroundColor: "#f5f5f5",
           padding: "0.75rem 1rem",
           borderRadius: "0.25rem",
@@ -166,7 +166,7 @@ const CategoryPage: React.FC = () => {
               <Link to="/products">Danh mục</Link>
             </li>
             <li className="breadcrumb-item active fs-6" aria-current="page">
-              Tất cả sản phẩm
+              {slug}
             </li>
           </ol>
 

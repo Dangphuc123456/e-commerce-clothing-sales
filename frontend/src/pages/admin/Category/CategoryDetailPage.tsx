@@ -38,7 +38,7 @@ const CategoryDetailPage: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(10);
-  // Modal state
+ 
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [productForm, setProductForm] = useState<Product>({
@@ -114,7 +114,7 @@ const CategoryDetailPage: React.FC = () => {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentProducts = products.slice(indexOfFirstItem, indexOfLastItem);
 
-  // Hiển thị 2 số trang trượt theo currentPage
+  
   const getVisiblePages = () => {
     if (totalPages <= 2) return Array.from({ length: totalPages }, (_, i) => i + 1);
     if (currentPage === totalPages) return [totalPages - 1, totalPages];

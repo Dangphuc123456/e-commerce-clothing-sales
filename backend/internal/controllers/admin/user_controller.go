@@ -65,7 +65,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"message": "User deleted successfully"})
 }
-// Lấy log đăng nhập của chính user
+// GET USER LOGS
 func GetUserLogsHandler(w http.ResponseWriter, r *http.Request) {
 	claims := middlewares.GetUserFromContext(r)
 	if claims == nil {
@@ -77,10 +77,8 @@ func GetUserLogsHandler(w http.ResponseWriter, r *http.Request) {
 	var err error
 
 	if claims.Role == "admin" {
-		// Admin xem được tất cả log
 		err = configs.DB.Order("created_at desc").Find(&logs).Error
 	} else {
-		// Staff, customer chỉ xem log của chính mình
 		logs, err = adminRepo.GetLoginLogsByUserID(claims.UserID)
 	}
 

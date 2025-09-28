@@ -33,3 +33,25 @@
 @media (min-width: 992px) {
   .nav-slide { display: none !important; }
 }
+.mobile-nav-panel {
+  position: fixed;
+  top: 0;
+  left: -100%;
+  width: 250px;
+  height: 100%;
+  background-color: navy;
+  color: white;
+  z-index: 1500;
+  overflow-y: auto;
+  transition: left 0.3s ease-in-out;
+}
+
+.mobile-nav-panel.open {
+  left: 0;
+}
+
+.mobile-nav-panel .form-control,
+.mobile-nav-panel .dropdown-toggle {
+  width: 100%;
+  text-align: left;
+}

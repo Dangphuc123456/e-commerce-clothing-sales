@@ -119,7 +119,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 
 	user, err := repository.GetUserByEmail(req.Email)
 	if err != nil || !utils.CheckPasswordHash(user.PasswordHash, req.Password) {
-		// ❌ Ghi log thất bại
 		repository.CreateLoginLog(&models.LoginLog{
 			UserID:    0,
 			Role:      "unknown",
@@ -134,12 +133,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// ✅ Tạo token với user_id, role, username
+	
 	claims := jwt.MapClaims{
 		"user_id":  user.ID,
 		"role":     user.Role,
-		"username": user.Username, // thêm username vào đây
-		"exp":      time.Now().Add(time.Hour * 24).Unix(), // thời gian sống token
+		"username": user.Username, 
+		"exp":      time.Now().Add(time.Hour * 24).Unix(), 
 		"iat":      time.Now().Unix(),
 	}
 
@@ -150,7 +149,6 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// ✅ Ghi log thành công
 	repository.CreateLoginLog(&models.LoginLog{
 		UserID:    user.ID,
 		Role:      user.Role,

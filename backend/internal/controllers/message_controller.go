@@ -56,7 +56,7 @@ func (h *ChatHandler) HandleWS(w http.ResponseWriter, r *http.Request) {
 		h.CustomerClients[customerID] = conn
 		h.mu.Unlock()
 
-		// Gửi lịch sử tin nhắn
+		// Send the message history.
 		msgs, _ := h.Repo.GetMessagesByCustomer(customerID)
 		conn.WriteJSON(struct {
 			Type     string           `json:"type"`
@@ -70,7 +70,7 @@ func (h *ChatHandler) HandleWS(w http.ResponseWriter, r *http.Request) {
 		h.AdminClients[conn] = true
 		h.mu.Unlock()
 
-		// Gửi tin nhắn gần đây
+		// Send recent messages
 		recentMsgs, _ := h.Repo.GetRecentMessages(200)
 		conn.WriteJSON(struct {
 			Type     string           `json:"type"`
@@ -80,7 +80,7 @@ func (h *ChatHandler) HandleWS(w http.ResponseWriter, r *http.Request) {
 			Messages: recentMsgs,
 		})
 
-		// Gửi tổng hợp unread
+		// Send unread summary
 		if summary, err := h.Repo.GetUnreadSummary(); err == nil {
 			conn.WriteJSON(struct {
 				Type    string                     `json:"type"`
@@ -108,7 +108,7 @@ func (h *ChatHandler) HandleWS(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	// Vòng read tin nhắn
+	// Message read loop
 	for {
 		var msg models.Message
 		if err := conn.ReadJSON(&msg); err != nil {
@@ -116,7 +116,7 @@ func (h *ChatHandler) HandleWS(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 
-		// Gán role và customerID
+		// Assign role and customerID
 		if role == "customer" {
 			msg.CustomerID = customerID
 			msg.SenderRole = "customer"
@@ -128,19 +128,19 @@ func (h *ChatHandler) HandleWS(w http.ResponseWriter, r *http.Request) {
 			msg.CreatedAt = time.Now()
 		}
 
-		// Lưu vào DB
+		// Save to DB
 		if err := h.Repo.SaveMessage(&msg); err != nil {
 			log.Println("Save message error:", err)
 		}
 
-		// Nếu admin gửi -> mark customer là đã đọc
+		// If admin sends -> mark customer as read
 		if role == "admin" && msg.CustomerID != 0 {
 			if err := h.Repo.MarkAsRead(msg.CustomerID); err != nil {
 				log.Println("MarkAsRead error:", err)
 			}
 		}
 
-		// Broadcast cho admin khác (không gửi lại chính nó)
+		// Broadcast to other admins (does not send back to itself)
 		h.mu.RLock()
 		for c := range h.AdminClients {
 			if err := c.WriteJSON(msg); err != nil {
@@ -153,7 +153,7 @@ func (h *ChatHandler) HandleWS(w http.ResponseWriter, r *http.Request) {
 		}
 		h.mu.RUnlock()
 
-		// Nếu admin gửi -> gửi đúng customer tương ứng
+		// If admin sends -> sends to the correct corresponding customer
 		if role == "admin" && msg.CustomerID != 0 {
 			h.mu.RLock()
 			custConn, ok := h.CustomerClients[msg.CustomerID]
@@ -168,7 +168,6 @@ func (h *ChatHandler) HandleWS(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		// Nếu customer gửi -> chỉ gửi tới admin, không broadcast sang customer khác
 		if role == "customer" {
 			h.mu.RLock()
 			for c := range h.AdminClients {
@@ -181,15 +180,14 @@ func (h *ChatHandler) HandleWS(w http.ResponseWriter, r *http.Request) {
 				}
 			}
 			h.mu.RUnlock()
-
-			// Echo lại cho chính customer
+			// Echo back to itself
 			if err := conn.WriteJSON(msg); err != nil {
 				log.Println("Echo to customer error:", err)
 			}
 		}
 	}
 
-	// Khi đóng connection
+	// Cleanup on disconnect
 	h.mu.Lock()
 	if role == "customer" {
 		delete(h.CustomerClients, customerID)

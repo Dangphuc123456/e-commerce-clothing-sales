@@ -20,7 +20,6 @@ func GetCartByUser(userID uint) ([]models.CartItem, error) {
 func AddToCart(item *models.CartItem) error {
     var variant models.ProductVariant
 
-    // ✅ Nếu VariantID = 0 thì tìm variant đầu tiên theo ProductName
     if item.VariantID == 0 {
         if err := configs.DB.
             Joins("JOIN products ON products.id = product_variants.product_id").
@@ -39,17 +38,14 @@ func AddToCart(item *models.CartItem) error {
         }
     }
 
-    // ✅ Kiểm tra stock
     if variant.Stock < item.Quantity {
         return errors.New("Số lượng trong kho không đủ")
     }
 
-    // ✅ Kiểm tra xem user đã có variant này trong giỏ chưa
     var existing models.CartItem
     if err := configs.DB.
         Where("user_id = ? AND variant_id = ?", item.UserID, item.VariantID).
         First(&existing).Error; err == nil {
-        // đã tồn tại → cộng dồn số lượng
         delta := item.Quantity
         if variant.Stock < delta {
             return errors.New("Số lượng trong kho không đủ")
@@ -112,7 +108,7 @@ func RemoveCartItem(userID, variantID uint64) error {
         if err := tx.Where("user_id = ? AND variant_id = ?", userID, variantID).
             Take(&cartItem).Error; err != nil {
             if err == gorm.ErrRecordNotFound {
-                return nil // item không tồn tại, không báo lỗi
+                return nil 
             }
             return err
         }

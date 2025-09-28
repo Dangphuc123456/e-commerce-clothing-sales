@@ -1,6 +1,6 @@
 .product-card {
-  position: relative; /* đảm bảo overlay được đặt đúng */
-  overflow: hidden;   /* che các phần vượt ra ngoài */
+  position: relative; 
+  overflow: hidden;   
 }
 
 .product-card .overlay {
@@ -13,13 +13,13 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
-  background: rgba(0, 0, 0, 0.4); /* nền mờ */
-  opacity: 0;                     /* ẩn mặc định */
+  background: rgba(0, 0, 0, 0.4); 
+  opacity: 0;                     
   transition: opacity 0.3s ease;
 }
 
 .product-card:hover .overlay {
-  opacity: 1; /* hiện khi hover */
+  opacity: 1; 
 }
 
 .product-card .icon-btn {

@@ -1,4 +1,3 @@
-// src/pages/admin/OrderDetailPage.tsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Card, Form, InputGroup, Button, Spinner,Table } from "react-bootstrap";
@@ -96,7 +95,7 @@ const OrderDetailPage: React.FC = () => {
   const items = order.Items || [];
   const customerAddress = order.customer_address || {};
 
-  // ✅ Badge màu theo status
+  //  Badge màu theo status
   const renderStatusBadge = (status?: string) => {
     switch (status) {
       case "pending":

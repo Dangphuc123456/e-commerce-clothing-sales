@@ -28,7 +28,6 @@ func CreateInventoryLog(log *models.InventoryLog) (*models.InventoryLog, error) 
 		return nil, errors.New("variant not found")
 	}
 
-	// 2. Cập nhật stock dựa trên change_type
 	switch log.ChangeType {
 	case "import", "return":
 		variant.Stock += log.Quantity
@@ -43,7 +42,6 @@ func CreateInventoryLog(log *models.InventoryLog) (*models.InventoryLog, error) 
 		return nil, errors.New("invalid change type")
 	}
 
-	// 3. Lưu log và cập nhật variant
 	if err := configs.DB.Save(&variant).Error; err != nil {
 		return nil, err
 	}

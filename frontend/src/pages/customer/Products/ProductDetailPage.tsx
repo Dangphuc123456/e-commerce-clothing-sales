@@ -11,7 +11,7 @@ import { useAppDispatch } from "../../../hooks/reduxHooks";
 import { addToCart } from "../../../slices/cartSlice";
 import ProductDetailModal from "../../../components/client/ProductDetailModal/ProductDetailModal";
 
-// Kiểu dữ liệu
+
 interface ProductVariant {
     id: number;
     size: string;

@@ -18,11 +18,11 @@ const CategoryPage: React.FC = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // pagination
+ 
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage, setItemsPerPage] = useState<number>(12);
 
-  // modals & form states
+  
   const [showAdd, setShowAdd] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
@@ -47,21 +47,21 @@ const CategoryPage: React.FC = () => {
     loadCategories();
   }, []);
 
-  // pagination logic
+  
   const totalPages = Math.ceil(categories.length / itemsPerPage);
   const paginatedCategories = categories.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  // Hiển thị 2 số trang trượt theo currentPage
+  
   const getVisiblePages = () => {
     if (totalPages <= 2) return Array.from({ length: totalPages }, (_, i) => i + 1);
     if (currentPage === totalPages) return [totalPages - 1, totalPages];
     return [currentPage, currentPage + 1];
   };
 
-  // ADD
+  
   const handleAdd = async () => {
     try {
       await api.post("/api/admin/categories", { name: activeCategory.name, group_name: activeCategory.group_name });
@@ -74,7 +74,7 @@ const CategoryPage: React.FC = () => {
     }
   };
 
-  // EDIT
+ 
   const handleEdit = async () => {
     if (!activeCategory.id) return;
     try {
@@ -88,7 +88,7 @@ const CategoryPage: React.FC = () => {
     }
   };
 
-  // DELETE countdown
+  
   useEffect(() => {
     if (showDelete) {
       setConfirmDisabled(true);
